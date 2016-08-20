@@ -286,7 +286,7 @@ public class Options {
 				do {
 					resolution = resolution.next();
 				} while (resolution != Resolution.RES_800_600 && (
-				         container.getScreenWidth() < resolution.getWidth() ||
+				         container.getScreenWidth() < resolution.getWidth() &&
 				         container.getScreenHeight() < resolution.getHeight()));
 			}
 
@@ -765,7 +765,7 @@ public class Options {
 	}
 
 	/** Current screen resolution. */
-	private static Resolution resolution = Resolution.RES_1024_768;
+	private static Resolution resolution = Resolution.RES_800_600;
 
 	/** The available skin directories. */
 	private static String[] skinDirs;
