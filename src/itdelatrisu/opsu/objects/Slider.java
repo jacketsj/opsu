@@ -189,13 +189,44 @@ public class Slider implements GameObject {
 		Vec2f endPos = curve.pointAt(1);
 
 		float curveInterval = Options.isSliderSnaking() ? alpha : 1f;
-		curve.draw(color,curveInterval);
+                
+                Color hitCircleOverlayColor = Colors.WHITE_FADE;
+                
+                if (GameMod.HIDDEN.isActive()) {
+                        // slider fadeaway
+                        if (sliderTime != 0) {
+                                //slider alpha goes through a third power function because linear change remained too visible for too long
+                                float hiddenSliderAlpha = (float) Math.pow((getEndTime() - trackPosition) / sliderTimeTotal, 3);
+                                //beginning and end points are move visible for the duration of the slider due to it only being a second power
+                                float hiddenSliderPointAlpha = (float) Math.pow((getEndTime() - trackPosition) / sliderTimeTotal, 2);
+                                if (hiddenSliderAlpha > 1f)
+                                        hiddenSliderAlpha = 1f;
+                                if (hiddenSliderPointAlpha > 1f)
+                                        hiddenSliderPointAlpha = 1f;
+                                if (hiddenSliderAlpha < 0f)
+                                        hiddenSliderAlpha = 0f;
+                                if (hiddenSliderPointAlpha < 0f)
+                                        hiddenSliderPointAlpha = 0f;
+                                Color hiddenSliderColor = new Color(color.r, color.b, color.g, hiddenSliderAlpha);
+                                hitCircleOverlayColor.a = hiddenSliderPointAlpha;
+                                curve.draw(hiddenSliderColor, curveInterval);
+                        }
+                        
+			final int hiddenDecayTime = game.getHiddenDecayTime();
+			final int hiddenTimeDiff = game.getHiddenTimeDiff();
+			if (fadeinScale <= 0f && timeDiff < hiddenTimeDiff + hiddenDecayTime) {
+				float hiddenAlpha = (timeDiff < hiddenTimeDiff) ? 0f : (timeDiff - hiddenTimeDiff) / (float) hiddenDecayTime;
+				alpha = Math.min(alpha, hiddenAlpha);
+			}
+                }
+                else
+                        curve.draw(color,curveInterval);
 		color.a = alpha;
 
 		// end circle
 		Vec2f endCircPos = curve.pointAt(curveInterval);
 		hitCircle.drawCentered(endCircPos.x, endCircPos.y, color);
-		hitCircleOverlay.drawCentered(endCircPos.x, endCircPos.y, Colors.WHITE_FADE);
+		hitCircleOverlay.drawCentered(endCircPos.x, endCircPos.y, hitCircleOverlayColor);
 
 		// start circle
 		hitCircle.drawCentered(x, y, color);
@@ -211,14 +242,6 @@ public class Slider implements GameObject {
 				Colors.WHITE_FADE.a = decorationsAlpha;
 				tick.drawCentered(c.x, c.y, Colors.WHITE_FADE);
 				Colors.WHITE_FADE.a = alpha;
-			}
-		}
-		if (GameMod.HIDDEN.isActive()) {
-			final int hiddenDecayTime = game.getHiddenDecayTime();
-			final int hiddenTimeDiff = game.getHiddenTimeDiff();
-			if (fadeinScale <= 0f && timeDiff < hiddenTimeDiff + hiddenDecayTime) {
-				float hiddenAlpha = (timeDiff < hiddenTimeDiff) ? 0f : (timeDiff - hiddenTimeDiff) / (float) hiddenDecayTime;
-				alpha = Math.min(alpha, hiddenAlpha);
 			}
 		}
 		if (sliderClickedInitial)
