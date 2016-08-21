@@ -892,7 +892,7 @@ public class GameData {
 				}
 
 				// hit animation
-				if (hitResult.result != HIT_MISS && (
+				if (hitResult.result != HIT_MISS && !GameMod.HIDDEN.isActive() && (
 				    hitResult.hitResultType == HitObjectType.CIRCLE ||
 				    hitResult.hitResultType == HitObjectType.SLIDER_FIRST ||
 				    hitResult.hitResultType == HitObjectType.SLIDER_LAST)) {

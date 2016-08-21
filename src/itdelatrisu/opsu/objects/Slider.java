@@ -194,23 +194,25 @@ public class Slider implements GameObject {
                 
                 if (GameMod.HIDDEN.isActive()) {
                         // slider fadeaway
-                        if (sliderTime != 0) {
-                                //slider alpha goes through a third power function because linear change remained too visible for too long
-                                float hiddenSliderAlpha = (float) Math.pow((getEndTime() - trackPosition) / sliderTimeTotal, 3);
-                                //beginning and end points are move visible for the duration of the slider due to it only being a second power
-                                float hiddenSliderPointAlpha = (float) Math.pow((getEndTime() - trackPosition) / sliderTimeTotal, 2);
-                                if (hiddenSliderAlpha > 1f)
-                                        hiddenSliderAlpha = 1f;
-                                if (hiddenSliderPointAlpha > 1f)
-                                        hiddenSliderPointAlpha = 1f;
-                                if (hiddenSliderAlpha < 0f)
-                                        hiddenSliderAlpha = 0f;
-                                if (hiddenSliderPointAlpha < 0f)
-                                        hiddenSliderPointAlpha = 0f;
-                                Color hiddenSliderColor = new Color(color.r, color.b, color.g, hiddenSliderAlpha);
-                                hitCircleOverlayColor.a = hiddenSliderPointAlpha;
-                                curve.draw(hiddenSliderColor, curveInterval);
+                        //slider alpha goes through a third power function because linear change remained too visible for too long
+                        float hiddenSliderAlpha = (float) Math.pow((getEndTime() - trackPosition) / sliderTimeTotal, 3);
+                        //beginning and end points are move visible for the duration of the slider due to it only being a second power
+                        float hiddenSliderPointAlpha = (float) Math.pow((getEndTime() - trackPosition) / sliderTimeTotal, 2);
+                        if (trackPosition > getEndTime()) {
+                                hiddenSliderAlpha = 0f;
+                                hiddenSliderPointAlpha = 0f;
                         }
+                        if (hiddenSliderAlpha > 1f)
+                                hiddenSliderAlpha = 1f;
+                        if (hiddenSliderPointAlpha > 1f)
+                                hiddenSliderPointAlpha = 1f;
+                        if (hiddenSliderAlpha < 0f)
+                                hiddenSliderAlpha = 0f;
+                        if (hiddenSliderPointAlpha < 0f)
+                                hiddenSliderPointAlpha = 0f;
+                        Color hiddenSliderColor = new Color(color.r, color.b, color.g, hiddenSliderAlpha);
+                        hitCircleOverlayColor.a = hiddenSliderPointAlpha;
+                        curve.draw(hiddenSliderColor, curveInterval);
                         
 			final int hiddenDecayTime = game.getHiddenDecayTime();
 			final int hiddenTimeDiff = game.getHiddenTimeDiff();

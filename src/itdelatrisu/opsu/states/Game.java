@@ -107,7 +107,7 @@ public class Game extends BasicGameState {
 	/** Tolerance in case if hit object is not snapped to the grid. */
 	private static final float STACK_LENIENCE = 3f;
 
-	/** Stack time window of the previous object, in ms. */
+	/** Stack time window of the previous object, in milliseconds. */
 	private static final int STACK_TIMEOUT = 1000;
 
 	/** Stack position offset modifier. */
@@ -450,7 +450,10 @@ public class Game extends BasicGameState {
 			}
 
 			data.drawGameElements(g, true, objectIndex == 0);
-
+                        
+                        //Allow remaining hit objects to fade out (especially important for areas with very short breaks)
+                        drawHitObjects(g, trackPosition);
+                        
 			if (breakLength >= 8000 &&
 				trackPosition - breakTime > 2000 &&
 				trackPosition - breakTime < 5000) {
